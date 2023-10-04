@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -11,31 +12,33 @@ import (
 
 type User struct {
 	ID       uint   `gorm:"primaryKey"`
-	User     string `json:"user"`
+	Username string `json:"username"`
 	Password string `json:"password"`
 }
+
+var DB *gorm.DB
 
 func Db_details() string {
 	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		os.Getenv("HOST"), os.Getenv("PORT"), os.Getenv("USER"), os.Getenv("PASSWORD"), os.Getenv("DBNAME"))
 }
 
-func InitDatabase() error {
+func InitDatabase() {
 
 	err := godotenv.Load()
 
 	if err != nil {
-		return err
+		log.Fatal("Something went wrong while reading .env file")
 	}
 
 	dsn := Db_details()
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
-	db.AutoMigrate(&User{})
+	DB.AutoMigrate(&User{})
 
 	if err != nil {
-		return err
+		log.Fatal("Something went wrong while connecting to the database")
 	}
 
-	return nil
+	fmt.Println("Connected to the database")
 }

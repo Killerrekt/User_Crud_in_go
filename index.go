@@ -1,8 +1,6 @@
 package main
 
 import (
-	"log"
-
 	api "github.com/Killerrekt/User_Crud_in_go/API"
 	database "github.com/Killerrekt/User_Crud_in_go/Database"
 	"github.com/gofiber/fiber/v2"
@@ -19,11 +17,7 @@ func Setuproutes(app *fiber.App) {
 func main() {
 	app := fiber.New()
 
-	err := database.InitDatabase()
-
-	if err != nil {
-		log.Fatal("Something went wrong while connecting to DB")
-	}
+	database.InitDatabase()
 
 	Setuproutes(app)
 	app.Listen(":3000")
