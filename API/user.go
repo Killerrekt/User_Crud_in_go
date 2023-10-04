@@ -66,8 +66,10 @@ func Deleteuser(c *fiber.Ctx) error {
 }
 
 func Getuser(c *fiber.Ctx) error {
+	var users []database.User
+	database.DB.Find(&users)
 	return c.Status(200).JSON(&fiber.Map{
-		"Route": "Working",
+		"users": users,
 	})
 }
 
