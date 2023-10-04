@@ -30,14 +30,32 @@ func Createuser(c *fiber.Ctx) error {
 
 	database.DB.Create(details)
 	return c.Status(200).JSON(&fiber.Map{
-		"data":    user,
+		"data":    details,
 		"success": true,
 	})
 }
 
 func Updateuser(c *fiber.Ctx) error {
+
+	var data = new(database.User)
+
+	c.BodyParser(data)
+
+	var check database.User
+
+	database.DB.Find(&check, "username = ?", data.Username)
+
+	if (check == database.User{}) {
+		return c.Status(400).JSON(&fiber.Map{
+			"error": "invalid username",
+		})
+	}
+
+	check.Password = data.Password
+	database.DB.Save(&check)
+
 	return c.Status(200).JSON(&fiber.Map{
-		"Route": "Working",
+		"message": "password updated successfully",
 	})
 }
 
